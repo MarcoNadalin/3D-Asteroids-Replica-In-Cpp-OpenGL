@@ -16,23 +16,6 @@
 #include "./Game.h"
 #include "./Input/InputManager.h"
 
-// angle of rotation for the camera direction
-float angle = 0.0f;
-
-// actual vector representing the camera's direction
-float lx = 0.0f, lz = -1.0f;
-
-// XZ position of the camera
-float x = 0.0f, z = 5.0f;
-
-// the key states. These variables will be zero
-//when no key is being presses
-float deltaAngle = 0.0f;
-float deltaMove = 0;
-int xOrigin = -1;
-
-/* MY STUFF ------------------------------------------------------------*/
-
 /* Main Game Object */
 std::unique_ptr<Game> game;
 
@@ -147,7 +130,6 @@ void releaseKey(int key, int x, int y) {
 
 }
 
-int lastX = 0;
 void mouseMove(int x, int y) {
 	inputManager->MouseMotion(x, y);
 	glutWarpPointer(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);
@@ -162,6 +144,7 @@ int main(int argc, char** argv) {
 	glutInitWindowSize(800, 800);
 	glutCreateWindow("Assignment 2");
 	glutFullScreen();
+	glutWarpPointer(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);
 
 	// register callbacks
 	glutDisplayFunc(renderScene);

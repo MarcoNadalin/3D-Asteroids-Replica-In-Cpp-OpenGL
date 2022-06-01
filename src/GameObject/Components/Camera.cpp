@@ -4,22 +4,26 @@ Camera::Camera(InputManager* inputManager)
 {
 	this->inputManager = inputManager;
 	this->yaw = 0;
+	this->pitch = 0;
 }
 
 void Camera::Update(float dt)
 {
-	
-	float xoffset = inputManager->mouseX * dt;
-	float yoffset = inputManager->mouseY * dt;
+	time_elapsed += dt;
 
-	yaw += xoffset;
-	pitch += yoffset;
+	if (time_elapsed >= activate_time) {
+		float xoffset = inputManager->mouseX * dt * inputManager->mouse_sensitivity;
+		float yoffset = inputManager->mouseY * dt * inputManager->mouse_sensitivity;
 
-	lx = sin(DegToRad(yaw));
-	lz = -cos(DegToRad(yaw));
-	ly = sin(DegToRad(pitch));
+		yaw += xoffset;
+		pitch += yoffset;
 
-	std::cout << "Ly : " << ly << "yOffset: " << yoffset << std::endl;
+		lx = sin(DegToRad(yaw));
+		lz = -cos(DegToRad(yaw));
+		ly = sin(DegToRad(pitch));
+
+		//std::cout << "coffset: " << xoffset << ", yoffset : " << yoffset << ", pitch : " << pitch << ", yaw: " << yaw << std::endl;
+	}	
 }
 
 

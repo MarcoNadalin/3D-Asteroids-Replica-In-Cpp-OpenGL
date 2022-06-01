@@ -21,8 +21,6 @@ private:
 	float pitch = 0.0f;
 		
 public:
-	// angle of rotation for the camera direction
-	
 
 	// actual vector representing the camera's direction
 	float lx = 0.0f, lz = -1.0f, ly = 1.0f;
@@ -31,6 +29,9 @@ public:
 	float x = 0.0f, y = 1.0f, z = 5.0f;
 
 	float deltaMove = 0;
+
+	float activate_time = 3.0f;
+	float time_elapsed = 0.0f;
 
 	Camera(InputManager* inputManager);
 

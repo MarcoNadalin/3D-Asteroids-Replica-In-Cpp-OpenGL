@@ -28,7 +28,7 @@ private:
 
 public:
 
-	float mouse_sensitivity = 0.15;
+	float mouse_sensitivity = 2.5f;
 	float mouseX;
 	float mouseY;
 
