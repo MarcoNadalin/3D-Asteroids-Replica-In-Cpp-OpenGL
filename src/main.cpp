@@ -48,31 +48,21 @@ void changeSize(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void drawSnowMan() {
+float light_position[] = { 1.0, 1,0, 1.0f, 0.0f };
+void init_lighting()                             // *** EXERCISE 3 ...
+{
+	
+	float light_ambient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	float light_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-	glColor3f(1.0f, 1.0f, 1.0f);
+	float mat_ambient[] = { 1.0f, 0.0f, 0.0f, 1.0f };
+	float mat_diffuse[] = { 0.0f, 1.0f, 0.0f, 1.0f };
 
-	// Draw Body
-	glTranslatef(0.0f, 0.75f, 0.0f);
-	glutSolidSphere(0.75f, 20, 20);
-
-	// Draw Head
-	glTranslatef(0.0f, 1.0f, 0.0f);
-	glutSolidSphere(0.25f, 20, 20);
-
-	// Draw Eyes
-	glPushMatrix();
-	glColor3f(0.0f, 0.0f, 0.0f);
-	glTranslatef(0.05f, 0.10f, 0.18f);
-	glutSolidSphere(0.05f, 10, 10);
-	glTranslatef(-0.1f, 0.0f, 0.0f);
-	glutSolidSphere(0.05f, 10, 10);
-	glPopMatrix();
-
-	// Draw Nose
-	glColor3f(1.0f, 0.5f, 0.5f);
-	glRotatef(0.0f, 1.0f, 0.0f, 0.0f);
-	glutSolidCone(0.08f, 0.5f, 10, 2);
+	glEnable(GL_LIGHTING);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);	
+	glEnable(GL_LIGHT0);
 }
 
 /* Display Callback */
@@ -83,6 +73,7 @@ void renderScene(void) {
 
 	// Reset transformations
 	glLoadIdentity();
+	init_lighting();
 	// Set the camera
 	game->Render();
 
@@ -146,10 +137,12 @@ int main(int argc, char** argv) {
 	glutFullScreen();
 	glutWarpPointer(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);
 
+	
 	// register callbacks
 	glutDisplayFunc(renderScene);
 	glutReshapeFunc(changeSize);
 	glutIdleFunc(update);
+	
 
 	glutIgnoreKeyRepeat(1);
 	glutKeyboardFunc(keyDown);

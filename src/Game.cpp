@@ -56,6 +56,7 @@ void Game::Render() {
 	glPushMatrix();
 	glTranslatef(0, 0, -20.0f);
 	glutSolidCube(10);
+	glFlush();
 	glPopMatrix();
 }
 
