@@ -16,113 +16,176 @@
 #include "./Game.h"
 #include "./Input/InputManager.h"
 
+// angle of rotation for the camera direction
+float angle = 0.0f;
+
+// actual vector representing the camera's direction
+float lx = 0.0f, lz = -1.0f;
+
+// XZ position of the camera
+float x = 0.0f, z = 5.0f;
+
+// the key states. These variables will be zero
+//when no key is being presses
+float deltaAngle = 0.0f;
+float deltaMove = 0;
+int xOrigin = -1;
+
+/* MY STUFF ------------------------------------------------------------*/
+
 /* Main Game Object */
 std::unique_ptr<Game> game;
 
 /* InputManager */
 std::unique_ptr<InputManager> inputManager;
-
 double time_of_previous_frame = 0;
 
-int window_w, window_h;
+void changeSize(int w, int h) {
 
-/* Display callback */
-void display()
-{
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glDisable(GL_DEPTH_TEST);
+	// Prevent a divide by zero, when window is too short
+	// (you cant make a window of zero width).
+	if (h == 0)
+		h = 1;
 
-    /* Render the game */
-    game->Render();
+	float ratio = w * 1.0 / h;
 
-    int err;
-    while ((err = glGetError()) != GL_NO_ERROR)
-        printf("display: %s\n", gluErrorString(err));
+	// Use the Projection Matrix
+	glMatrixMode(GL_PROJECTION);
 
-    glutSwapBuffers();
+	// Reset Matrix
+	glLoadIdentity();
+
+	// Set the viewport to be the entire window
+	glViewport(0, 0, w, h);
+
+	// Set the correct perspective.
+	gluPerspective(45.0f, ratio, 0.1f, 100.0f);
+
+	// Get Back to the Modelview
+	glMatrixMode(GL_MODELVIEW);
+}
+
+void drawSnowMan() {
+
+	glColor3f(1.0f, 1.0f, 1.0f);
+
+	// Draw Body
+	glTranslatef(0.0f, 0.75f, 0.0f);
+	glutSolidSphere(0.75f, 20, 20);
+
+	// Draw Head
+	glTranslatef(0.0f, 1.0f, 0.0f);
+	glutSolidSphere(0.25f, 20, 20);
+
+	// Draw Eyes
+	glPushMatrix();
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glTranslatef(0.05f, 0.10f, 0.18f);
+	glutSolidSphere(0.05f, 10, 10);
+	glTranslatef(-0.1f, 0.0f, 0.0f);
+	glutSolidSphere(0.05f, 10, 10);
+	glPopMatrix();
+
+	// Draw Nose
+	glColor3f(1.0f, 0.5f, 0.5f);
+	glRotatef(0.0f, 1.0f, 0.0f, 0.0f);
+	glutSolidCone(0.08f, 0.5f, 10, 2);
+}
+
+/* Display Callback */
+void renderScene(void) {
+
+	// Clear Color and Depth Buffers
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Reset transformations
+	glLoadIdentity();
+	// Set the camera
+	game->Render();
+
+	glutSwapBuffers();
 }
 
 /* Idle callback and game loop */
 void update() {
 
-    double current = glutGet(GLUT_ELAPSED_TIME);
+	double current = glutGet(GLUT_ELAPSED_TIME);
 
-    if ((current - time_of_previous_frame) > 0.001) {
+	if ((current - time_of_previous_frame) > 0.001) {
 
-        /* Convert delta time to seconds */
-        double dt = (current - time_of_previous_frame) / 1000;
-        time_of_previous_frame = current;
+		/* Convert delta time to seconds */
+		double dt = (current - time_of_previous_frame) / 1000;
+		time_of_previous_frame = current;
 
-        /* Update game for current frame */
-        game->Update((float)dt);
+		/* Update game for current frame */
+		game->Update((float)dt);
 
-        /* Re-Render for current frame */
-        glutPostRedisplay();
-    }
+		/* Re-Render for current frame */
+		glutPostRedisplay();
+	}
 }
 
 /* Keyboard callback */
 void keyDown(unsigned char key, int x, int y)
 {
-    inputManager->OnKeyDown(key);
+	inputManager->OnKeyDown(key);
 }
 
 void keyUp(unsigned char key, int x, int y) {
-    inputManager->OnKeyUp(key);
+	inputManager->OnKeyUp(key);
 }
 
-void init()
-{
-    /* In this simple program these OpenGL calls only need to be done once, */
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+void pressKey(int key, int xx, int yy) {
 
-    time_of_previous_frame = glutGet(GLUT_ELAPSED_TIME);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glutIdleFunc(update);
-
-    /* set rand seed */
-    srand(time(NULL));
-    /* Initialising objects for the game and input manager */
-    inputManager = std::make_unique<InputManager>();
-    game = std::make_unique<Game>(inputManager.get());
-}
-
-void on_reshape(int w, int h)
-{
-    fprintf(stderr, "on_reshape(%d, %d)\n", w, h);
-    glViewport(0, 0, w, h);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0.0, w, 0.0, h, -1.0, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+	inputManager->OnKeyDown(key);
 
 }
 
-int main(int argc, char** argv)
-{
-    glutInit(&argc, argv);
-    
-    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-    
-    glutCreateWindow("Astroids - Assignment 1 - s3782230");
-    glutFullScreen();
+void releaseKey(int key, int x, int y) {
 
-    /* Display callback */
-    glutDisplayFunc(display);
-    glutReshapeFunc(on_reshape);
+	inputManager->OnKeyUp(key);
 
-    /* Setting up keyboard input and callbacks */
-    glutKeyboardFunc(keyDown);
-    glutKeyboardUpFunc(keyUp);
+}
 
-    init();
+int lastX = 0;
+void mouseMove(int x, int y) {
+	inputManager->MouseMotion(x, y);
+	glutWarpPointer(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);
+}
 
-    /* Start glut main application loop */
-    glutMainLoop();
+
+int main(int argc, char** argv) {
+	
+	// init GLUT and create window
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+	glutInitWindowSize(800, 800);
+	glutCreateWindow("Assignment 2");
+	glutFullScreen();
+
+	// register callbacks
+	glutDisplayFunc(renderScene);
+	glutReshapeFunc(changeSize);
+	glutIdleFunc(update);
+
+	glutIgnoreKeyRepeat(1);
+	glutKeyboardFunc(keyDown);
+	glutKeyboardUpFunc(keyUp);
+	glutSpecialFunc(pressKey);
+	glutSpecialUpFunc(releaseKey);
+
+	// here are the two new functions
+	glutPassiveMotionFunc(mouseMove);
+
+	// OpenGL init
+	glEnable(GL_DEPTH_TEST);
+
+	/* Initialising objects for the game and input manager */
+	inputManager = std::make_unique<InputManager>();
+	game = std::make_unique<Game>(inputManager.get());
+
+	// enter GLUT event processing cycle
+	glutMainLoop();	
+
+	return 1;
 }

@@ -40,7 +40,7 @@ Player::Player(InputManager* inputManager, SceneGraph* sceneGraph, float x, floa
 void Player::Update(float dt)
 {
     this->Check_Collision();
-    this->MovePlayer(dt);
+    //this->MovePlayer(dt);
     this->RotatePlayer(dt);
 
     /* Update player score */

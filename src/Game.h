@@ -12,6 +12,7 @@
 #include "GameObject/Asteroid/Asteroid.h"
 #include "Particle/ParticleGroup.h"
 #include "UI/GUI.h"
+#include "GameObject/Components/Camera.h"
 
 enum GameState { Paused, Playing, GameOver };
 
@@ -22,20 +23,21 @@ class Game
 {
 private:
 	std::unique_ptr<GUI> gui;
-	std::shared_ptr<Player> player;
-
 
 	std::unique_ptr<SceneGraph> sceneGraph;
 	
 	InputManager* inputManager;
 
+	std::unique_ptr<Camera> camera;
 
-	GameState state = Paused;
+	GameState state = Playing;
 	float elapsed_round_time = 0;
 	float time_start_round = 0;
 	
 
 	int current_wave = 1;
+
+	float deltaMove = 0;
 
 	/**
 	* Initialises all the class-variables and other setup
@@ -72,6 +74,8 @@ public:
 	*  Spawns one asteroid at a random point outside the arena, facing the player
 	*/
 	void SpawnAsteroid();	
+
+	void UpdateCamera(float dt);
 };
 
 #endif

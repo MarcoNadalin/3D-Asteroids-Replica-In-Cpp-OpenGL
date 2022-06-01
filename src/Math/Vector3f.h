@@ -62,6 +62,8 @@ public:
 	*/
 	Vector3f& Add(const Vector3f& vector);
 
+	Vector3f& Subtract(const Vector3f& other);
+
 	Vector3f& Multiply(float other);
 
 	Vector3f& Multiply(const Vector3f& vector);

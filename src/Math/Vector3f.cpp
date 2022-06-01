@@ -21,6 +21,11 @@ Vector3f::~Vector3f()
 	this->z = 0;
 }
 
+Vector3f Vector3f::Cross(const Vector3f& other) const
+{
+	return Vector3f(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
+}
+
 Vector3f& Vector3f::Multiply(float other)
 {
 	x *= other;
@@ -108,6 +113,15 @@ Vector3f& Vector3f::Add(const Vector3f& vector)
 	x += vector.x;
 	y += vector.y;
 	z += vector.z;
+
+	return *this;
+}
+
+Vector3f& Vector3f::Subtract(const Vector3f& other)
+{
+	x -= other.x;
+	y -= other.y;
+	z -= other.z;
 
 	return *this;
 }
