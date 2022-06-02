@@ -13,6 +13,9 @@
 # include <GL/glut.h>
 #endif
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "./Graphics/stb_image.h"
+
 #include "./Game.h"
 #include "./Input/InputManager.h"
 
@@ -22,6 +25,55 @@ std::unique_ptr<Game> game;
 /* InputManager */
 std::unique_ptr<InputManager> inputManager;
 double time_of_previous_frame = 0;
+
+/* SKYBOX STUFF ---------------------------------------*/
+GLuint sky_top;
+uint32_t load_texture(const char* filename)
+{
+	int width, height, components;
+	unsigned char* data = stbi_load(filename, &width, &height, &components, STBI_rgb);
+
+	unsigned int id;
+	glPushAttrib(GL_TEXTURE_BIT);
+	glGenTextures(1, &id);
+	glBindTexture(GL_TEXTURE_2D, id);
+	//glGenerateMipmap(GL_TEXTURE_2D);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glPopAttrib();
+	return id;
+}
+
+void skybox() {
+
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, sky_top);
+
+	glPushMatrix();
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0);
+	glVertex3f(-70, -70, -50);
+
+	glTexCoord2f(1, 0);
+	glVertex3f(70, -70, -50);
+
+	glTexCoord2f(1, 1);
+	glVertex3f(70, 70, -50);
+
+	glTexCoord2f(0, 1);
+	glVertex3f(-70, 70, -50);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glEnd();
+	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
+}
 
 void changeSize(int w, int h) {
 
@@ -72,7 +124,9 @@ void renderScene(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Reset transformations
+	skybox();
 	glLoadIdentity();
+	
 	init_lighting();
 	// Set the camera
 	game->Render();
@@ -127,6 +181,8 @@ void mouseMove(int x, int y) {
 }
 
 
+
+
 int main(int argc, char** argv) {
 	
 	// init GLUT and create window
@@ -150,6 +206,13 @@ int main(int argc, char** argv) {
 	glutSpecialFunc(pressKey);
 	glutSpecialUpFunc(releaseKey);
 
+	/* loading textures */
+	sky_top = load_texture("../assets/textures/sky/front.png");
+	if (!sky_top) {
+		printf("No texture created; exiting.\n");
+		return EXIT_FAILURE;
+	}
+
 	// here are the two new functions
 	glutPassiveMotionFunc(mouseMove);
 
@@ -160,6 +223,7 @@ int main(int argc, char** argv) {
 	inputManager = std::make_unique<InputManager>();
 	game = std::make_unique<Game>(inputManager.get());
 
+	
 	// enter GLUT event processing cycle
 	glutMainLoop();	
 
