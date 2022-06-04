@@ -13,6 +13,24 @@
 #include "Particle/ParticleGroup.h"
 #include "UI/GUI.h"
 #include "GameObject/Components/Camera.h"
+#include "Graphics/Cubemap.h"
+#include "Assets/AssetLoader.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
+#if _WIN32
+# include <windows.h>
+#endif
+#if __APPLE__
+# include <OpenGL/gl.h>
+# include <OpenGL/glu.h>
+# include <GLUT/glut.h>
+#else
+# include <GL/gl.h>
+# include <GL/glu.h>
+# include <GL/glut.h>
+#endif
 
 enum GameState { Paused, Playing, GameOver };
 
@@ -27,6 +45,8 @@ private:
 	std::unique_ptr<SceneGraph> sceneGraph;
 	
 	InputManager* inputManager;
+
+	std::unique_ptr<Cubemap> skybox;
 
 	std::unique_ptr<Camera> camera;
 
@@ -74,6 +94,10 @@ public:
 	*  Spawns one asteroid at a random point outside the arena, facing the player
 	*/
 	void SpawnAsteroid();	
+
+	void setSkyBox(Cubemap* skybox);
+
+	void createLighting();
 
 	void UpdateCamera(float dt);
 };

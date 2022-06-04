@@ -22,7 +22,7 @@ void Camera::Update(float dt)
 		lz = -cos(DegToRad(yaw));
 		ly = sin(DegToRad(pitch));
 
-		//std::cout << "coffset: " << xoffset << ", yoffset : " << yoffset << ", pitch : " << pitch << ", yaw: " << yaw << std::endl;
+		//std::cout << "mouseX: " << inputManager->mouseX << "xoffset: " << xoffset << ", yoffset : " << yoffset << ", pitch : " << pitch << ", yaw: " << yaw << std::endl;
 	}	
 }
 
