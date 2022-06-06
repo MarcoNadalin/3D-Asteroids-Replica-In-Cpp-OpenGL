@@ -11,6 +11,14 @@ GameObject::GameObject(float x, float y, float z) {
     this->tag = tag;
 }
 
+GameObject::GameObject(const char* obj_file_location, float x, float y, float z)
+{
+    /* initialise the vector at position (x,y,z) */
+    this->transform = std::make_shared<Transform>(x, y, z);
+    this->tag = tag;
+    this->mesh = std::make_unique<Mesh>(obj_file_location);
+}
+
 void GameObject::Update(float dt)
 {
 
@@ -18,14 +26,13 @@ void GameObject::Update(float dt)
 
 void GameObject::RenderGameObject()
 {  
-    glPushMatrix();
-    glLoadIdentity();    
+    glPushMatrix();   
 
     /* Translate before rotation so it rotates around the pivot point */
     glTranslatef(transform->pivot_position->x, transform->pivot_position->y, transform->pivot_position->z);
     glRotatef(transform->euler_angles->z, 0, 0, 1);
     glScalef(scale, scale, scale);
-
+    
     Render();
 
     glPopMatrix();
@@ -34,16 +41,12 @@ void GameObject::RenderGameObject()
 
 void GameObject::CreateVerticies()
 {
-    for (auto& vertex : this->verticies) {
-        glColor3f(vertex->r, vertex->g, vertex->b);
-        glVertex3f(vertex->x, vertex->y, vertex->z);
-    }
+
 }
 
 void GameObject::CreateVerticies(std::vector<Vertex*> verticies)
 {
     for (auto& vertex : verticies) {
-        glColor3f(vertex->r, vertex->g, vertex->b);
         glVertex3f(vertex->x, vertex->y, vertex->z);
     }
 }
@@ -51,48 +54,33 @@ void GameObject::CreateVerticies(std::vector<Vertex*> verticies)
 void GameObject::RenderVerticies(GLenum render_mode)
 {
     glBegin(render_mode);
-    for (auto& vertex : this->verticies) {
-
-        glColor3f(vertex->r, vertex->g, vertex->b);
-        glVertex3f(vertex->x, vertex->y, vertex->z);
+    for (auto& vertex : *this->mesh->getVerticies()) {
+        glTexCoord2f(vertex->texcoord->x, vertex->texcoord->y);
+        glNormal3f(vertex->normal->x, vertex->normal->y, vertex->normal->z);
+        glVertex3f(vertex->position->x, vertex->position->y, vertex->position->z);        
     }
     glEnd();
 }
 
 void GameObject::AddVertex(float x, float y, float z)
 {
-    struct Vertex* vertex = new Vertex;
-    vertex->x = x;
-    vertex->y = y;
-    vertex->z = z;
-    this->verticies.push_back(vertex);
 }
 
 void GameObject::AddVertex(std::vector<Vertex*> verticies, float x, float y, float z)
 {
-    struct Vertex* vertex = new Vertex;
-    vertex->x = x;
-    vertex->y = y;
-    vertex->z = z;
-    verticies.push_back(vertex);
+
 }
 
 void GameObject::AddVertex(float x, float y, float z, int r, int g, int b)
 {
-    struct Vertex* vertex = new Vertex;
-    vertex->x = x;
-    vertex->y = y;
-    vertex->z = z;
-    vertex->r = r;
-    vertex->g = g;
-    vertex->b = b;
-    this->verticies.push_back(vertex);
+
 }
 
 void GameObject::Move(const Vector3f& velocity)
 {
     this->transform->pivot_position->x += velocity.x;
     this->transform->pivot_position->y += velocity.y;
+    this->transform->pivot_position->z += velocity.z;
 }
 
 Vector3f& GameObject::Forward(const float& x, const float& y, const float& z)
@@ -102,11 +90,7 @@ Vector3f& GameObject::Forward(const float& x, const float& y, const float& z)
 
 void GameObject::ChangeColour(int r, int g, int b)
 {
-    for (auto& vertex : this->verticies) {
-        vertex->r = r;
-        vertex->g = g;
-        vertex->b = b;
-    }
+
 }
 
 float GameObject::GetScale()
@@ -122,11 +106,6 @@ void GameObject::SetScale(float scale)
 std::string GameObject::GetTag()
 {
     return this->tag;
-}
-
-std::vector<Vertex*> GameObject::GetVerticies()
-{
-    return verticies;
 }
 
 CircleCollider* GameObject::GetCollider()

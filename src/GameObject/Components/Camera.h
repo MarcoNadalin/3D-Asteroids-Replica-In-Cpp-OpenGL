@@ -17,6 +17,7 @@ class Camera
 {
 private:
 	InputManager* inputManager;
+	Transform* transform;
 	float yaw = 0.0f;
 	float pitch = 0.0f;
 		
@@ -26,19 +27,25 @@ public:
 	float lx = 0.0f, lz = -1.0f, ly = 1.0f;
 
 	// XZ position of the camera
-	float x = 0.0f, y = 1.0f, z = 5.0f;
+	//float x = 0.0f, y = 1.0f, z = 5.0f;
 
 	float deltaMove = 0;
 
 	float activate_time = 3.0f;
 	float time_elapsed = 0.0f;
 
+	Camera();
+
 	Camera(InputManager* inputManager);
+
+	Camera(Transform* transform, InputManager* inputManager);
 
 
 	void Update(float dt);
 
 	void MoveCamera(float dt);
+
+	Transform* GetTransform() { return transform; }
 };
 
 #endif

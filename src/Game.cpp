@@ -8,8 +8,6 @@ Game::Game(InputManager* inputManager) {
 
 	this->inputManager = inputManager;	
 
-	this->camera = std::make_unique<Camera>(this->inputManager);
-
 	this->Init();
 }
 
@@ -30,51 +28,48 @@ void Game::Init()
 	GLuint sky_bottom = assetloader::loadTextureEdgeClamp("../assets/textures/sky_2/bottom.png");
 	GLuint sky_back = assetloader::loadTextureEdgeClamp("../assets/textures/sky_2/back.png");
 
+
+	GLuint spaceship = assetloader::loadTextureEdgeClamp("../assets/models/spaceship/Dashboard_COL_2K.png");
+
 	skybox = std::make_unique<Cubemap>(sky_front, sky_back, sky_top, sky_bottom, sky_left, sky_right);
 
+
+	/* CREATE GAME OBJECTS */
+	this->player = std::make_shared<Player>(this->inputManager, this->sceneGraph.get(), "../assets/models/spaceship/spaceship_2.obj", 0, 0, 0);
+	this->active_camera = this->player->GetCamera();
 	
+	this->sceneGraph->AddGameObject(player);
+
 	std::cout << "START!" << std::endl;
 }
 
 void Game::Update(float dt) {
-	if (this->inputManager->IsKeyPressed('w')) {
-		camera->deltaMove = 1.5f;
-	}
-	else if (this->inputManager->IsKeyPressed('s')) {
-		camera->deltaMove = -1.5f;
-	}
-	else {
-		camera->deltaMove = 0;
-	}
-	this->camera->Update(dt);
-	UpdateCamera(camera->deltaMove);
+	this->sceneGraph->Update(dt);
 }
 
 void Game::Render() {
 	/* Render skybox before lighting scene */
 	if (this->skybox) {
-		this->skybox->RenderCubemap(camera->x, camera->y, camera->z);
+		this->skybox->RenderCubemap(active_camera->GetTransform()->pivot_position->x,
+			active_camera->GetTransform()->pivot_position->y,
+			active_camera->GetTransform()->pivot_position->z);
 	}	
 	/* Add lighting to scene */
 	this->createLighting();
 	/* Load identity matrix before performing translations / camera movements */
 	glLoadIdentity();
 	/* Render camera perspective */
-	gluLookAt(camera->x, 1.0f, camera->z,
-		camera->x + camera->lx, camera->y + camera->ly, camera->z + camera->lz,
+	gluLookAt(active_camera->GetTransform()->pivot_position->x, 1.0f, active_camera->GetTransform()->pivot_position->z,
+		active_camera->GetTransform()->pivot_position->x + active_camera->lx,
+		active_camera->GetTransform()->pivot_position->y + active_camera->ly,
+		active_camera->GetTransform()->pivot_position->z + active_camera->lz,
 		0.0f, 1.0f, 0.0f);
 
-	// Draw ground
+	
+	/* RENDER ALL OBJECTS WITHIN SCENE GRAPH */
+	this->sceneGraph->Render();
 
-	//glColor3f(0.9f, 0.9f, 0.9f);
-	//glBegin(GL_QUADS);
-	//glVertex3f(-100.0f, 0.0f, -100.0f);
-	//glVertex3f(-100.0f, 0.0f, 100.0f);
-	//glVertex3f(100.0f, 0.0f, 100.0f);
-	//glVertex3f(100.0f, 0.0f, -100.0f);
-	//glEnd();
-
-	/* Draw cube */
+	/* DRAW SIMPLE DEBUG CUBE. WILL DELETE */
 	glPushMatrix();
 	glTranslatef(0, 0, -20.0f);
 	glutSolidCube(10);
@@ -117,10 +112,4 @@ void Game::createLighting()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 	glEnable(GL_LIGHT0);
-}
-
-void Game::UpdateCamera(float dt)
-{
-	camera->x += dt * camera->lx * 0.1f;
-	camera->z += dt * camera->lz * 0.1f;
 }

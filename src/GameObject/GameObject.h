@@ -24,11 +24,9 @@
 #include <iostream>
 #include "./Components/Transform.h"
 #include "../GameObject/Components/CircleCollider.h"
+#include "../Graphics/Mesh.h"
+#include "../Graphics/Vertex.h"
 
-struct Vertex {
-	float x, y, z;
-	int r = 255, g = 255, b = 255;
-};
 
 /**
 * The parent class that all objects within the game inherit. All objects on the screen are GameObjects
@@ -36,8 +34,6 @@ struct Vertex {
 class GameObject
 {
 private:
-	std::vector<Vertex*> verticies;
-
 	float scale = 1;
 
 protected:
@@ -46,12 +42,14 @@ protected:
 public:
 
 	std::shared_ptr<Transform> transform;
+	std::shared_ptr<Mesh> mesh;
 
 	float rotation = 0;
 	float rotationDelta = 75;
 
 	GameObject();
 	GameObject(float x, float y, float z);
+	GameObject(const char* obj_file_location, float x, float y, float z);
 	/**
 	* The update method for each game object. must be implemented in child classes
 	* 
@@ -147,8 +145,6 @@ public:
 
 
 	std::string GetTag();
-
-	std::vector<Vertex*> GetVerticies();
 };
 
 #endif

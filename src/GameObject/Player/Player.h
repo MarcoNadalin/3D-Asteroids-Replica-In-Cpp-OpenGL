@@ -13,6 +13,7 @@
 #include "../Rocket/Rocket.h"
 #include "../../Math/Math.h"
 #include "../Turret/Turret.h"
+#include "../../GameObject/Components/Camera.h"
 
 enum WeaponType { Normal, SeekingRocket};
 
@@ -22,6 +23,7 @@ private:
 	InputManager* inputManager;
 	SceneGraph* sceneGraph;
 
+	std::shared_ptr<Camera> camera;
 	std::unique_ptr<CircleCollider> collider;
 	std::unique_ptr<CircleCollider> near_wall_collider;
 
@@ -42,30 +44,25 @@ private:
 
 	float fireRate = 0.5f;
 	float timeSinceLastShot = 0;
-
-	float time_since_turret_deploy = 0.0f;
-	float turret_deploy_time = 1.0f;
 	int score = 0;
-	int turret_cost = 2;
-	int turrets_spawned = 0;
 
 	void MovePlayer(float dt);
 	void RotatePlayer(float dt);
 	void Shoot(float dt);
-	void SpawnTurret();
 	void Check_Collision();
-	void Check_Wall_Collision(GameObject* gameObject);
-	void AsteroidCollision(GameObject* gameObject);
 
 public:
 	bool reset_game = false;
 	Player(InputManager* inputManager, SceneGraph* sceneGraph);
 	Player(InputManager* inputManager, SceneGraph* sceneGraph, float x, float y, float z);
+	Player(InputManager* inputManager, SceneGraph* sceneGraph, const char* obj_location, float x, float y, float z);
 	void Update(float dt);
 	void Render();
 
 	void SetScore(int score);
 	int GetScore();
+
+	Camera* GetCamera() { return camera.get(); }
 
 };
 

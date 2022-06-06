@@ -15,6 +15,7 @@
 #include "GameObject/Components/Camera.h"
 #include "Graphics/Cubemap.h"
 #include "Assets/AssetLoader.h"
+#include "Graphics/Mesh.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -48,12 +49,13 @@ private:
 
 	std::unique_ptr<Cubemap> skybox;
 
-	std::unique_ptr<Camera> camera;
+	Camera* active_camera;
 
 	GameState state = Playing;
 	float elapsed_round_time = 0;
 	float time_start_round = 0;
 	
+	std::shared_ptr<Player> player;
 
 	int current_wave = 1;
 
@@ -98,8 +100,6 @@ public:
 	void setSkyBox(Cubemap* skybox);
 
 	void createLighting();
-
-	void UpdateCamera(float dt);
 };
 
 #endif
