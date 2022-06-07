@@ -16,37 +16,6 @@ Mesh::Mesh(const char* obj_location)
 
 bool Mesh::load_file(const char* obj_location)
 {
-    //std::ifstream in(obj_location, std::ios::in);
-    //if (!in)
-    //{
-    //    std::cout << "Cannot open " << obj_location << std::endl;
-    //    exit(1);
-
-    //}
-    //std::string line;
-    //while (std::getline(in, line))
-    //{
-    //    //check v for vertices
-    //    if (line.substr(0, 2) == "v ") {
-    //        std::istringstream v(line.substr(2));
-    //        std::shared_ptr<Vertex> vertex;
-    //        double x, y, z;
-    //        v >> x;v >> y;v >> z;
-    //        vertex = std::make_unique<Vertex>(x, y, z);
-    //        temp_verticies->push_back(vertex);
-    //    }
-    //    //check for texture co-ordinate
-    //    else if (line.substr(0, 2) == "vt") {
-
-    //        std::istringstream v(line.substr(3));
-    //        std::shared_ptr<Vertex> vertex;
-    //        int U, V;
-    //        v >> U;v >> V;
-    //        vertex = std::make_unique<Vertex>(U, V, 0);
-    //        temp_uvs->push_back(vertex);
-    //        
-    //    }
-    //}
     return true;
 }
 

@@ -53,3 +53,6 @@ x - spawn turret
 3. Asteroids spawn on any point on the 'circle' outside the arena, and they move 
    to the position of the player at the time they are spawned.
 
+CREDITS:
+"Star Wars: X-Wing Cockpit" (https://skfb.ly/6BQRJ) by Daniel is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+

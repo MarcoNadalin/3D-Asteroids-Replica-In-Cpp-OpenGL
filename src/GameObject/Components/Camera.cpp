@@ -4,7 +4,7 @@ Camera::Camera()
 {
 	this->yaw = 0;
 	this->pitch = 0;
-	this->transform = new Transform(0, 0, 0);
+	this->transform = std::make_unique<Transform>(0,0,0);
 }
 
 Camera::Camera(InputManager* inputManager)
@@ -12,15 +12,15 @@ Camera::Camera(InputManager* inputManager)
 	this->inputManager = inputManager;
 	this->yaw = 0;
 	this->pitch = 0;
-	this->transform = new Transform(0, 0, 0);
+	this->transform = std::make_unique<Transform>(0, 0, 0);
 }
 
-Camera::Camera(Transform* transform, InputManager* inputManager)
+Camera::Camera(InputManager* inputManager, float x, float y, float z)
 {
 	this->inputManager = inputManager;
 	this->yaw = 0;
 	this->pitch = 0;
-	this->transform = transform;
+	this->transform = std::make_unique<Transform>(x, y, z);
 }
 
 void Camera::Update(float dt)

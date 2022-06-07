@@ -27,9 +27,11 @@ void GameObject::Update(float dt)
 void GameObject::RenderGameObject()
 {  
     glPushMatrix();   
-
+    glLoadIdentity();
     /* Translate before rotation so it rotates around the pivot point */
     glTranslatef(transform->pivot_position->x, transform->pivot_position->y, transform->pivot_position->z);
+    glRotatef(transform->euler_angles->x, 1, 0, 0);
+    glRotatef(transform->euler_angles->y, 0, 1, 0);
     glRotatef(transform->euler_angles->z, 0, 0, 1);
     glScalef(scale, scale, scale);
     
@@ -52,14 +54,23 @@ void GameObject::CreateVerticies(std::vector<Vertex*> verticies)
 }
 
 void GameObject::RenderVerticies(GLenum render_mode)
-{
+{   
+    glEnable(GL_TEXTURE_2D);
+
+    if (this->texture != NULL) {        
+        glBindTexture(GL_TEXTURE_2D, this->texture);
+    }
+
     glBegin(render_mode);
     for (auto& vertex : *this->mesh->getVerticies()) {
         glTexCoord2f(vertex->texcoord->x, vertex->texcoord->y);
         glNormal3f(vertex->normal->x, vertex->normal->y, vertex->normal->z);
-        glVertex3f(vertex->position->x, vertex->position->y, vertex->position->z);        
+        glTexCoord2f(vertex->texcoord->x, vertex->texcoord->y);
+        glVertex3f(vertex->position->x, vertex->position->y, vertex->position->z);
     }
     glEnd();
+    glDisable(GL_TEXTURE_2D);
+    
 }
 
 void GameObject::AddVertex(float x, float y, float z)

@@ -29,13 +29,20 @@ void Game::Init()
 	GLuint sky_back = assetloader::loadTextureEdgeClamp("../assets/textures/sky_2/back.png");
 
 
-	GLuint spaceship = assetloader::loadTextureEdgeClamp("../assets/models/spaceship/Dashboard_COL_2K.png");
+	GLuint spaceship = assetloader::loadTextureEdgeClamp("../assets/models/xwing/xwing_diffuse.png");
 
 	skybox = std::make_unique<Cubemap>(sky_front, sky_back, sky_top, sky_bottom, sky_left, sky_right);
 
 
-	/* CREATE GAME OBJECTS */
-	this->player = std::make_shared<Player>(this->inputManager, this->sceneGraph.get(), "../assets/models/spaceship/spaceship_2.obj", 0, 0, 0);
+	////////////////////////////////////////////////////////////
+	////////////* CREATE AND POSITION GAME OBJECTS *///////////
+	//////////////////////////////////////////////////////////
+	this->player = std::make_shared<Player>(this->inputManager, this->sceneGraph.get(), "../assets/models/xwing/xwing.obj", 0, 0, 0);
+	player->SetTexture(spaceship);
+	player->SetScale(5);
+	player->transform->euler_angles->y = 90; // rotating spaceship so it is oriented correctly in front of the camera
+	player->transform->pivot_position->y = -2.8f; // moving it down slightly so the perspective is correct
+	player->transform->pivot_position->z = -1.0f; // moving it forward so it doesnt clip through the camera
 	this->active_camera = this->player->GetCamera();
 	
 	this->sceneGraph->AddGameObject(player);
@@ -100,7 +107,8 @@ void Game::SpawnAsteroid()
 
 void Game::createLighting()
 {
-	float light_position[] = { 1.0, 1,0, 1.0f, 0.0f };
+	float light_position_1[] = { 0.5, 0.5, 0.5f, 1.0f };
+	float light_position_2[] = { -1.0f, -1.0f, -1.0f, 1.0f };
 	float light_ambient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	float light_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
@@ -110,6 +118,11 @@ void Game::createLighting()
 	glEnable(GL_LIGHTING);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position_1);
 	glEnable(GL_LIGHT0);
+
+	glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
+	glLightfv(GL_LIGHT1, GL_POSITION, light_position_2);
+	glEnable(GL_LIGHT1);
 }

@@ -35,6 +35,7 @@ class GameObject
 {
 private:
 	float scale = 1;
+	GLint texture;
 
 protected:
 	std::string tag = "GameObject";
@@ -139,6 +140,8 @@ public:
 	* @param b
 	*/
 	void ChangeColour(int r, int g, int b);
+
+	void SetTexture(GLint texture) { this->texture = texture; }
 
 	float GetScale();
 	void SetScale(float scale);

@@ -19,7 +19,7 @@ Player::Player(InputManager* inputManager, SceneGraph* sceneGraph, const char* o
 {
     this->inputManager = inputManager;
     this->sceneGraph = sceneGraph;
-    this->camera = std::make_shared<Camera>(this->transform.get(), this->inputManager);
+    this->camera = std::make_shared<Camera>(this->inputManager, 0, 0, 0);
 }
     
 
@@ -40,6 +40,7 @@ void Player::Update(float dt)
 }
 
 void Player::Render() {
+    
     this->RenderVerticies(GL_TRIANGLES);
 }
 

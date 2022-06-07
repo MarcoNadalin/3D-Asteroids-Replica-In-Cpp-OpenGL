@@ -17,7 +17,8 @@ class Camera
 {
 private:
 	InputManager* inputManager;
-	Transform* transform;
+	//Transform* transform;
+	std::unique_ptr<Transform> transform;
 	float yaw = 0.0f;
 	float pitch = 0.0f;
 		
@@ -25,9 +26,6 @@ public:
 
 	// actual vector representing the camera's direction
 	float lx = 0.0f, lz = -1.0f, ly = 1.0f;
-
-	// XZ position of the camera
-	//float x = 0.0f, y = 1.0f, z = 5.0f;
 
 	float deltaMove = 0;
 
@@ -38,14 +36,14 @@ public:
 
 	Camera(InputManager* inputManager);
 
-	Camera(Transform* transform, InputManager* inputManager);
+	Camera(InputManager* inputManager, float x, float y, float z);
 
 
 	void Update(float dt);
 
 	void MoveCamera(float dt);
 
-	Transform* GetTransform() { return transform; }
+	Transform* GetTransform() { return transform.get(); }
 };
 
 #endif
