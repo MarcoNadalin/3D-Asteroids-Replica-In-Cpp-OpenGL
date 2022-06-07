@@ -19,13 +19,14 @@ private:
 	InputManager* inputManager;
 	//Transform* transform;
 	std::unique_ptr<Transform> transform;
-	float yaw = 0.0f;
-	float pitch = 0.0f;
 		
 public:
 
 	// actual vector representing the camera's direction
 	float lx = 0.0f, lz = -1.0f, ly = 1.0f;
+
+	float yaw = 0.0f;
+	float pitch = 0.0f;
 
 	float deltaMove = 0;
 

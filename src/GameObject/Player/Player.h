@@ -50,6 +50,7 @@ private:
 	void RotatePlayer(float dt);
 	void Shoot(float dt);
 	void Check_Collision();
+	void CollisionWithWalls();
 
 public:
 	bool reset_game = false;

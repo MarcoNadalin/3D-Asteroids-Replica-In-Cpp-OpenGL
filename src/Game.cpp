@@ -57,9 +57,7 @@ void Game::Update(float dt) {
 void Game::Render() {
 	/* Render skybox before lighting scene */
 	if (this->skybox) {
-		this->skybox->RenderCubemap(active_camera->GetTransform()->pivot_position->x,
-			active_camera->GetTransform()->pivot_position->y,
-			active_camera->GetTransform()->pivot_position->z);
+		this->skybox->RenderCubemap(0,0,0);
 	}	
 	/* Add lighting to scene */
 	this->createLighting();
@@ -108,7 +106,6 @@ void Game::SpawnAsteroid()
 void Game::createLighting()
 {
 	float light_position_1[] = { 0.5, 0.5, 0.5f, 1.0f };
-	float light_position_2[] = { -1.0f, -1.0f, -1.0f, 1.0f };
 	float light_ambient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	float light_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
@@ -120,9 +117,4 @@ void Game::createLighting()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position_1);
 	glEnable(GL_LIGHT0);
-
-	glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
-	glLightfv(GL_LIGHT1, GL_POSITION, light_position_2);
-	glEnable(GL_LIGHT1);
 }
