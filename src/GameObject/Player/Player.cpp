@@ -6,6 +6,7 @@ Player::Player(InputManager* inputManager, SceneGraph* sceneGraph) : GameObject{
     this->inputManager = inputManager;
     this->sceneGraph = sceneGraph;
     this->camera = std::make_shared<Camera>();
+    this->load_identity_before_render = true;
 }
 
 Player::Player(InputManager* inputManager, SceneGraph* sceneGraph, float x, float y, float z) : GameObject{ x, y, z }
@@ -13,6 +14,7 @@ Player::Player(InputManager* inputManager, SceneGraph* sceneGraph, float x, floa
     this->inputManager = inputManager;
     this->sceneGraph = sceneGraph;
     this->camera = std::make_shared<Camera>();
+    this->load_identity_before_render = true;
 }
 
 Player::Player(InputManager* inputManager, SceneGraph* sceneGraph, const char* obj_location, float x, float y, float z) : GameObject{obj_location, x, y, z }
@@ -20,13 +22,20 @@ Player::Player(InputManager* inputManager, SceneGraph* sceneGraph, const char* o
     this->inputManager = inputManager;
     this->sceneGraph = sceneGraph;
     this->camera = std::make_shared<Camera>(this->inputManager, 0, 0, 0);
+    this->load_identity_before_render = true;
 }
     
 
 
 void Player::Update(float dt)
 {
+    this->timeSinceLastShot += dt;
     MovePlayer(dt);
+
+    if (inputManager->IsKeyPressed(' ')) {
+        Shoot(dt);
+    }
+    
 
     CollisionWithWalls();
 }
@@ -48,6 +57,15 @@ void Player::MovePlayer(float dt)
     else {
         camera->deltaMove = 0;
     }
+
+
+    if (this->inputManager->IsKeyPressed('a')) {
+        
+    }
+    else if (this->inputManager->IsKeyPressed('d')) {
+        
+    }
+
     camera->Update(dt);
     camera->MoveCamera(camera->deltaMove);
 }
@@ -61,15 +79,11 @@ void Player::Shoot(float dt)
 
         //Create bullet or rocket
         if (currentWeaponType == Normal) {
-            //std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(this->sceneGraph, this->transform->pivot_position.get(), this->transform->euler_angles->z);
+            std::shared_ptr<Vector3f> bulletDirection = std::make_shared<Vector3f>(camera->lx, camera->ly, camera->lz);
+            std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(this->sceneGraph, camera->GetTransform()->pivot_position.get(), bulletDirection.get());
             //Add bullet to scene graph
-            //this->sceneGraph->AddGameObject(bullet);
-        }
-        else {
-            //std::shared_ptr<Rocket> rocket = std::make_shared<Rocket>(this->sceneGraph, this->transform->pivot_position.get(), this->transform->euler_angles->z);
-            //Add bullet to scene graph
-            //this->sceneGraph->AddGameObject(rocket);
-        }       
+            this->sceneGraph->AddGameObject(bullet);
+        }    
     }
 }
 

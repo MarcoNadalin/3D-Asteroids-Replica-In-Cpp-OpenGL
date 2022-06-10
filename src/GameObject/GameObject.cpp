@@ -26,8 +26,11 @@ void GameObject::Update(float dt)
 
 void GameObject::RenderGameObject()
 {  
-    glPushMatrix();   
-    glLoadIdentity();
+    glPushMatrix();  
+
+    if (this->load_identity_before_render) {
+        glLoadIdentity();
+    }    
     /* Translate before rotation so it rotates around the pivot point */
     glTranslatef(transform->pivot_position->x, transform->pivot_position->y, transform->pivot_position->z);
     glRotatef(transform->euler_angles->x, 1, 0, 0);

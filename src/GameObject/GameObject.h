@@ -39,6 +39,7 @@ private:
 
 protected:
 	std::string tag = "GameObject";
+	bool load_identity_before_render = false;
 
 public:
 

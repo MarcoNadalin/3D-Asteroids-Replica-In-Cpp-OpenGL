@@ -51,13 +51,18 @@ private:
 
 	Camera* active_camera;
 
-	GameState state = Playing;
+	GameState state = Paused;
 	float elapsed_round_time = 0;
 	float time_start_round = 0;
 	
 	std::shared_ptr<Player> player;
 
 	int current_wave = 1;
+	int max_number_of_asteroids_at_once_time = 4;
+	int num_asteroids_spawned_in_round = 0;
+	float asteroid_spawn_rate = 2.0f;
+
+	float time_since_last_asteroid_spawn = 0.0f;
 
 	float deltaMove = 0;
 

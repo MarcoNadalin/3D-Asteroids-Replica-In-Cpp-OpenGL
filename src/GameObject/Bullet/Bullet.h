@@ -17,26 +17,17 @@ class Bullet : public GameObject
 {
 private:
 	SceneGraph* sceneGraph;
-	Vector3f* direction;
-	float bulletSpeed = 600;
+	std::unique_ptr<Vector3f> direction;
+	float bulletSpeed = 65.0f;
 	float bulletRotation = 0;
-
-	
-	float collider_radius = 0.5;
-
 
 	bool is_bullet_out_of_bounds();
 
 public:
-	Bullet(SceneGraph* sceneGraph, Vector3f* spawnPosition, float rotation);
+	Bullet(SceneGraph* sceneGraph, Vector3f* spawnPosition, Vector3f* direrction);
 	Bullet();
 	void Update(float dt);
 	void Render();
-
-	std::unique_ptr<CircleCollider> collider;
-
-	CircleCollider& GetCollider();
-
 };
 
 #endif
