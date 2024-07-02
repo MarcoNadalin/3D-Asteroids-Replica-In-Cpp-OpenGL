@@ -12,19 +12,6 @@
 2. Alternatively, you could open the project by clicking on "vs\i3d.sln" and then run it within Visual Studio, 
    but beware, this was completed on Visual Studio 2022 and upgraded windows sdk. 
 
-## FEATURES IMPLEMENTED
--------------------------------------------------
-Level 1         : All features implemented
--------------------------------------------------
-Level 2         : All features implemented
--------------------------------------------------
-Level 3         : All features implemented
--------------------------------------------------
-Level 4         : 4.1, 4.4 implemented
--------------------------------------------------
-Bonus Features  : All bonus features implemented 
--------------------------------------------------
-
 ## CONTROLS
 w - go forwards
 s - go backwards
